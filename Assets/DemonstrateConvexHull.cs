@@ -21,12 +21,11 @@ public class DemonstrateConvexHull : MonoBehaviour
         }
 
         Array.Sort(cloud, Vector2IntComparer); //ascending or descending?
-        List<Vector2Int> remainder = new List<Vector2Int>();
-        List<Vector2Int> hull = ComputeHull(cloud, remainder);
-        foreach(Vector2Int v in remainder)
-            drawer.DrawPoint((float)(v.x)/cloudScale , (float)(v.y)/cloudScale , Color.blue);
+        List<Vector2Int> hull = ComputeHull(cloud);
+        foreach(Vector2Int p in cloud)
+            drawer.DrawPoint( (float)p.x/cloudScale,(float)p.y/cloudScale,Color.blue);
         foreach(Vector2Int v in hull)
-            drawer.DrawPoint((float)(v.x)/cloudScale , (float)(v.y)/cloudScale , Color.red);
+            drawer.ColorPoint((float)(v.x)/cloudScale , (float)(v.y)/cloudScale , Color.red);
 
         
     }
@@ -37,7 +36,7 @@ public class DemonstrateConvexHull : MonoBehaviour
         
     }
 
-    List<Vector2Int> ComputeHull(Vector2Int[] cloud, List<Vector2Int> remainder)
+    List<Vector2Int> ComputeHull(Vector2Int[] cloud)
     {
         List<Vector2Int> hull = new List<Vector2Int>();
         for( int i = 0 ; i < cloudSize ; i++)
@@ -61,8 +60,6 @@ public class DemonstrateConvexHull : MonoBehaviour
                 continue;
             while(CalcArea(hull[hull.Count-3] , hull[hull.Count-2] , hull[hull.Count-1]) <= 0)
             {
-                if(findIndexOf(hull[hull.Count-2], hull, 0 , upperSize) ==-1) //ruins n log n running time
-                    remainder.Add(hull[hull.Count-2]);
                 hull.RemoveAt(hull.Count-2);
                 if(hull.Count<3 + upperSize)
                     break;
@@ -71,16 +68,6 @@ public class DemonstrateConvexHull : MonoBehaviour
         if(hull[0] == hull[hull.Count-1])
             hull.RemoveAt(hull.Count-1);
         return hull;
-    }
-
-    int findIndexOf( Vector2Int v,List<Vector2Int> l, int start, int finish)
-    {
-        for(int i = start ; i < finish ; i++)
-        {
-            if(l[i] == v)
-                return i;
-        }
-        return -1;
     }
 
     public class V2iComparerHelper : IComparer
