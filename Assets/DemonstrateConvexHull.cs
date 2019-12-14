@@ -22,8 +22,14 @@ public class DemonstrateConvexHull : MonoBehaviour
 
         Array.Sort(cloud, Vector2IntComparer); //ascending or descending?
         List<Vector2Int> hull = ComputeHull(cloud);
-        foreach(Vector2Int p in cloud)
-            drawer.DrawPoint( (float)p.x/cloudScale,(float)p.y/cloudScale,Color.blue);
+        Vector2[] floatCloud = new Vector2[cloudSize];
+        //foreach(Vector2Int p in cloud)
+          //  drawer.DrawPoint( (float)p.x/cloudScale,(float)p.y/cloudScale,Color.blue);
+        for(int i = 0 ; i < cloudSize; i++)
+        {
+            floatCloud[i] = (Vector2)(cloud[i]);
+        }
+        drawer.DrawPoints(floatCloud,Color.blue);
         foreach(Vector2Int v in hull)
             drawer.ColorPoint((float)(v.x)/cloudScale , (float)(v.y)/cloudScale , Color.red);
 
@@ -61,7 +67,7 @@ public class DemonstrateConvexHull : MonoBehaviour
             while(CalcArea(hull[hull.Count-3] , hull[hull.Count-2] , hull[hull.Count-1]) <= 0)
             {
                 hull.RemoveAt(hull.Count-2);
-                if(hull.Count<3 + upperSize)
+                if(hull.Count<2 + upperSize)
                     break;
             }     
         }
